@@ -1,6 +1,6 @@
 # Unique Employee Tracker
 
-![License](https://img.shields.io/badge/License-Mit%202.0-blue.svg)
+![License](https://img.shields.io/badge/License-MIT%202.0-blue.svg)
 
 ## Decription
 
@@ -28,7 +28,7 @@ This project was created to help advance and manage multiple interfaces that sto
 
   ## License
   
-  This project is licensed by Mit
+  This project is licensed by MIT
 
   ## Contribution Guidelines 
 
