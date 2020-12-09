@@ -34,7 +34,8 @@ function start() {
       "View employees",
       "Update employee roles"
     ]
-  }).then(function(answer) {
+  })
+  .then(function(answer) {
     switch (answer.action) {
       case "Add a department":
         addDepartment();
@@ -64,5 +65,22 @@ function start() {
         updateRoles();
         break;
     }
+  });
+}
+
+// Add departments
+function addDepartment() {
+  inquirer.prompt({
+    name: "newDepartment",
+    type: "input",
+    message: "What is the department name that is being added?",
+  })
+  .then(function(answer) {
+    connection.query("INSERT INTO department SET?", {name: answer.newDepartment},
+      function(err) {
+        if (err) throw err;
+        console.log("Department was add");
+        start();
+      });
   });
 }
