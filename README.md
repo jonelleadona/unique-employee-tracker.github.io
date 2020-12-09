@@ -1,10 +1,11 @@
 # Unique Employee Tracker
 
+![License](https://img.shields.io/badge/License-Mit%202.0-blue.svg)
+
 ## Decription
 
 This project was created to help advance and manage multiple interfaces that store employee information in a more organized way. Using the power of Node, Inquirer, and MySQL, I was able to build a Content Management System that allows users to interact and view the stored information within the databases. 
 
-  ![License](https://img.shields.io/badge/License-Mit%202.0-blue.svg)
 
   ## Table of Contents
   
