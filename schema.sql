@@ -1,0 +1,19 @@
+DROP DATABASE IF EXISTS unique_employee_tracker_db; 
+
+CREATE DATABASE unique_employee_tracker_db; 
+
+USE unique_employee_tracker_db;
+
+CREATE TABLE department(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  name VARCHAR(30) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE role(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  department INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
