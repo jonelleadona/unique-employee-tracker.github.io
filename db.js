@@ -17,6 +17,7 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
+
   start();
 });
 
@@ -87,7 +88,7 @@ function addDepartment() {
 
 // Adds job roles
 function addRole() {
-  let arrayRole = [];
+  const departmentArray = [];
   connection.query("SELECT * FROM department", function(err,res) {
     if (err) throw err;
     inquirer.prompt ([
@@ -112,20 +113,111 @@ function addRole() {
         type: "rawlist",
         choices: function() {
           for (var i=0; i < res.length; i++) {
-            arrayRole.push(res[i].name);
+            departmentArray.push(res[i].name);
           }
-          return arrayRole;
+          return departmentArray;
         },
         message: "What department will this role be assigned to?",
       },
     ]).then((function(answer){
-      let roleIndex = arrayRole.indexOf (answer.departmentName);
-      let departmentId = res[roleIndex].id;
+      const roleIndex = departmentArray.indexOf (answer.departmentName);
+      const departmentId = res[roleIndex].id;
 
       connection.query(
-        "INSERT INTO role SET ?",
+        "INSERT INTO role SET ?", {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: departmentId,
+        },
+        function(err){
+          if (err) throw err;
+          console.log("Role was added");
 
+          start();
+        }
       )
     })
-  )},
+  )}
 )};
+
+// Adds employee info
+function addEmployee() {
+  const employeeRoleArray = []; 
+  connection.query ("SELECT * FROM role", function(err,res){
+    if (err) throw err;
+    inquirer.prompt ([
+      {
+        name: "firstName",
+        type: "input",
+        message: "What is the employees's first name?"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "What is the employee's last name?",
+      },
+      {
+        name: "role",
+        type: "rawlist",
+        choices: function() {
+          for (var i=0; i < res.length; i++) {
+            employeeRoleArray.push(res[i].title);
+          }
+          return employeeRoleArray;
+        },
+        message: "What is the employee's job role?",
+      },
+    ]).then (function(answer){
+      const firstName = answer.firstName;
+      const lastName = answer.lastName;
+      const roleIndex = employeeRoleArray.indexOf (answer.role);
+      const employeeRole = res[roleIndex].id;
+      
+      const managerArray = ["NA"];
+
+      connection.query("SELECT * FROM employee", function(err,res){
+        if(err) throw err;
+        inquirer.prompt([
+          {
+            name: "manager",
+            type: "rawlist",
+            choices: function(){
+              for (var i = 0; i < res.length; i++) {
+                managerArray.push(res[i].first_name, res[i].last_name);
+              }
+              return managerArray;
+            },
+            message: "Who is the employee's manager?"
+          },
+        ]).then (function(answer){
+          if (answer.manager === "NA") {
+            const managerId = null;
+            insertEmployee(firstName, lastName, employeeRole, managerId);
+          } else {
+            const managerIndex = managerArray.indexOf(answer.manager);
+            const managerId = res[managerIndex].id;
+            insertEmployee(firstName, lastName, employeeRole, managerId);
+          }
+        })
+      });
+    })
+  });
+}
+
+function insertEmployee (firstName,lastName,role,managerId){
+  connection.query(
+    "INSERT INTO employee SET ?",
+    {
+        first_name: firstName,
+        last_name: lastName,
+        role_id: role,
+        manager_id: managerId,
+    },
+    (err) => {
+        if (err) throw err;
+        console.log("Employee added");
+
+        start();
+    }
+  );
+}
