@@ -11,32 +11,23 @@ This project was created to help advance and manage multiple interfaces that sto
   
   [Description](#description)  
   [Installation Instructions](#installation-instructions)  
-  [Usage Information](#usage-information)  
-  [License](#license)  
-  [Contribution Guidelines](#contribution-guidelines)  
-  [Test Instructions](#test-instructions)  
+  [License](#license)      
   [Questions](#questions)  
+
+  ![](./demo-sql.gif)
 
 
   ## Installation Instructions 
 
   To install necessary dependencies, run the following command:  
-
-
-  ## Usage Information
+  - NPM inquirer
+  - mySQL
  
 
   ## License
   
   This project is licensed by MIT
 
-  ## Contribution Guidelines 
-
-  Pull a request to the repository to add a seperate contribution branch. 
-
-  ## Test Instructions
-
-  
 
   ## Questions
 

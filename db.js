@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { up } = require("inquirer/lib/utils/readline");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -50,15 +51,15 @@ function start() {
         addEmployee();
         break;
       
-      case "View all departments":
+      case "View departments":
         viewDepartments();
         break;
       
-      case "View all roles":
+      case "View roles":
         viewRoles();
         break;
       
-      case "View all employees":
+      case "View employees":
         viewEmployees();
         break; 
       
@@ -80,7 +81,6 @@ function addDepartment() {
       function(err) {
         if (err) throw err;
         console.log("Department was add");
-
         start();
       });
   });
@@ -132,7 +132,6 @@ function addRole() {
         function(err){
           if (err) throw err;
           console.log("Role was added");
-
           start();
         }
       )
@@ -194,7 +193,7 @@ function addEmployee() {
             const managerId = null;
             insertEmployee(firstName, lastName, employeeRole, managerId);
           } else {
-            const managerIndex = managerArray.indexOf(answer.manager);
+            const managerIndex = managerArray.indexOf(answer.name);
             const managerId = res[managerIndex].id;
             insertEmployee(firstName, lastName, employeeRole, managerId);
           }
@@ -216,8 +215,90 @@ function insertEmployee (firstName,lastName,role,managerId){
     (err) => {
         if (err) throw err;
         console.log("Employee added");
-
         start();
     }
   );
+}
+
+// View department 
+function viewDepartments() {
+
+  connection.query("SELECT * FROM department", function(err,res){
+    if (err) throw err;
+    console.table(res);
+    start();
+  })
+}
+
+function viewRoles() {
+  connection.query("SELECT * FROM role", function(err,res) {
+    if (err) throw err;
+    console.table(res);
+    start();
+  }) 
+}
+
+function viewEmployees() {
+  connection.query("SELECT * FROM employee", function(err,res) {
+    if (err) throw err;
+    console.table(res);
+    start();
+  })
+}
+
+function updateRoles() {
+  const employeeArray = [];
+  connection.query("SELECT * FROM employee", function(err,res){
+    if (err) throw err;
+    inquirer.prompt([
+      {
+        name: "selection",
+        type: "rawlist",
+        choices: function() {
+          for (var i = 0; i < res.length; i++) {
+            employeeArray.push(res[i].first_name, res[i].last_name);
+          }
+          return employeeArray;
+        },
+        message: "Select which role to update",
+      }
+    ]).then(function(answer){
+      const roleArray = [];
+      const employeeIndex = employeeArray.indexOf(answer.selection);
+      const employeeId = res[employeeIndex].id;
+
+      connection.query("SELECT * FROM role", function(err,res) {
+        if (err) throw err;
+
+        inquirer.prompt([
+          {
+            name: "updateRole",
+            type: "rawlist",
+            choices: function() {
+              for (var i = 0; i < res.lenght; i++) {
+                roleArray.push(res[i].first_name, res[i].last_name);
+              }
+              return employeeArray; 
+            },
+            message: "Which employee is being updated?",
+          },
+        ]).then(function(asnwer){
+          const indexRole = roleArray.indexOf(answer.name);
+          const updateRole = res[indexRole].id;
+          connection.query(
+            "UPDATE employee SET ? WHERE?",
+            [{
+              role_id: updateRole,
+              id: employeeId,
+            }],
+            function(err, res) {
+              console.log ("Employee role was updated");
+
+              start();
+            }
+          )
+        });
+      })
+    })
+  });
 }
