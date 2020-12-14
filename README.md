@@ -14,7 +14,7 @@ This project was created to help advance and manage multiple interfaces that sto
   [License](#license)      
   [Questions](#questions)  
 
-  ![](./demo-sql.gif)
+  ![](.demo-sql.gif)
 
 
   ## Installation Instructions 
